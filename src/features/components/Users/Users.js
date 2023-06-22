@@ -17,7 +17,8 @@ import {
 } from '@chakra-ui/react';
 import { DeleteIcon } from '@chakra-ui/icons'
 import Loader from '../../common/Loader';
-import { getUserList, userStateValues, deleteUser } from './userSlice';
+import { userStateValues, deleteUser } from '../../../app/slices/users/userSlice';
+import { getUserList } from '../../../app/slices/users/userActions';
 import AlertDialogCustom from '../../common/AlertDialog';
 
 export function Users() {
@@ -38,13 +39,13 @@ export function Users() {
 
   useEffect(() => {
     dispatch(getUserList());
-  }, []);
+  }, [dispatch]);
 
   return (
     <Grid templateColumns='repeat(3, 1fr)' gap={6} m={10}>
       {
         list.map((details, index) => {
-          return <GridItem w='100%'>
+          return <GridItem w='100%' key={details.id}>
             <Card
               overflow='auto'
               variant='outline'

@@ -1,5 +1,5 @@
-import { createAsyncThunk, createSlice } from '@reduxjs/toolkit';
-import axios from 'axios';
+import { createSlice } from '@reduxjs/toolkit';
+import { getUserList } from './userActions';
 
 const initialState = {
   list: [],
@@ -33,33 +33,8 @@ export const counterSlice = createSlice({
   },
 });
 
-export const { increment, decrement, incrementByAmount, deleteUser } = counterSlice.actions;
+export const { deleteUser } = counterSlice.actions;
 
 export const userStateValues = (state) => state.users;
-
-const api = axios.create({
-  baseURL: "https://jsonplaceholder.typicode.com",
-  withCredentials: false,
-  headers: {
-    Accept: "application/json",
-    "Content-Type": "application/json",
-  },
-});
-
-export const getUserList = createAsyncThunk(
-  'users/fetchUserList',
-  async (_, { rejectWithValue }) => {
-    try {
-      const { data } = await api.get("/users")
-      return data;
-    } catch (error) {
-      if (error.response && error.response.data) {
-        return rejectWithValue(error.response.data);
-      } else {
-        return rejectWithValue(error.message);
-      }
-    }
-  }
-);
 
 export default counterSlice.reducer;
