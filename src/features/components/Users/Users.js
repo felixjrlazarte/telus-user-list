@@ -1,4 +1,4 @@
-import React, { useEffect } from 'react';
+import React, { useState, useEffect } from 'react';
 import { useSelector, useDispatch } from 'react-redux';
 import {
   Card,
@@ -18,10 +18,23 @@ import {
 import { DeleteIcon } from '@chakra-ui/icons'
 import Loader from '../../common/Loader';
 import { getUserList, userStateValues, deleteUser } from './userSlice';
+import AlertDialogCustom from '../../common/AlertDialog';
 
 export function Users() {
   const { list, isFetching } = useSelector(userStateValues);
+  const [openDialog, setOpenDialog] = useState(false);
+  const [selectedIndex, setSelectedIndex] = useState(true);
   const dispatch = useDispatch();
+
+  const handleDeleteAction = () => {
+    dispatch(deleteUser(selectedIndex))
+    setOpenDialog(false);
+  }
+
+  const handleDeleteButton = (index) => {
+    setSelectedIndex(index);
+    setOpenDialog(true);
+  }
 
   useEffect(() => {
     dispatch(getUserList());
@@ -50,7 +63,7 @@ export function Users() {
                     variant='ghost'
                     colorScheme='red'
                     aria-label='See menu'
-                    onClick={() => dispatch(deleteUser(index))}
+                    onClick={() => handleDeleteButton(index)}
                     icon={<DeleteIcon />}
                   />
                 </Flex>
@@ -82,6 +95,13 @@ export function Users() {
       }
 
       <Loader isLoading={isFetching} />
+
+      <AlertDialogCustom
+        isOpen={openDialog}
+        title="Remove User"
+        onCancel={() => setOpenDialog(false)}
+        onProceed={handleDeleteAction}
+      />
     </Grid>
   );
 }
